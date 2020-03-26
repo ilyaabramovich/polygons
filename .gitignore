@@ -92,4 +92,6 @@ ENV/
 # vscode 
 .vscode
 
-/variants
+variants
+variants_3
+# !variants/variants_2/file_31.csv  
