@@ -7,11 +7,10 @@ from pathlib import Path
 from os import path
 
 
-def main(args):
-    ROAD_WIDTH = 12
+def main(filename, road_width):
     output_dir = "variants"
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-    polygon = read_polygon_data(args)
+    polygon = read_polygon_data(filename)
     smooth_polygon(data=polygon, status=900, output_dir=output_dir)
     new_output_dir = output_dir+"_2"
     smooth_polygon_file = path.join(new_output_dir, "file_31.csv")
@@ -39,20 +38,20 @@ def main(args):
     x_d, y_d = new_coords[stop_index+1]
 
     h = (((-2*x_1*y_a*y_b*y_c+2*x_1*y_a*y_b*y_d-24*x_a*y_b*y_c+24*x_a*y_b*y_d+2*x_c*y_a*y_b*y_d+24*x_c*y_a*y_b-2*x_d*y_a*y_b*y_c-24*x_d*y_a*y_b)**2
-          - 4*(ROAD_WIDTH*x_1*y_a*y_b*y_c-ROAD_WIDTH*x_1*y_a*y_b*y_d+144*x_a*y_b*y_c-144*x_a*y_b*y_d-ROAD_WIDTH*x_c*y_a*y_b*y_d-144*x_c*y_a*y_b+ROAD_WIDTH*x_d*y_a*y_b*y_c
+          - 4*(road_width*x_1*y_a*y_b*y_c-road_width*x_1*y_a*y_b*y_d+144*x_a*y_b*y_c-144*x_a*y_b*y_d-road_width*x_c*y_a*y_b*y_d-144*x_c*y_a*y_b+road_width*x_d*y_a*y_b*y_c
                + 144*x_d*y_a*y_b)*(x_a * y_b*y_c-x_a*y_b*y_d+x_b*y_a*y_c-x_b*y_a*y_d-2*x_c*y_a*y_b+2*x_d*y_a*y_b))**0.5
          + 2*x_1*y_a*y_b*y_c-2*x_1*y_a*y_b*y_d+24*x_a*y_b*y_c-24*x_a*y_b*y_d-2*x_c*y_a*y_b*y_d-24*x_c*y_a*y_b+2*x_d*y_a*y_b*y_c+24*x_d*y_a*y_b)/(2*(x_a*y_b*y_c
                                                                                                                                                     - x_a*y_b*y_d+x_b*y_a*y_c-x_b*y_a*y_d-2*x_c*y_a*y_b+2*x_d*y_a*y_b))
     h2 = (-((-2*x_1*y_a*y_b*y_c+2*x_1*y_a*y_b*y_d-24*x_a*y_b*y_c+24*x_a*y_b*y_d+2*x_c*y_a*y_b*y_d+24*x_c*y_a*y_b-2*x_d*y_a*y_b*y_c-24*x_d*y_a*y_b)**2
-            - 4*(ROAD_WIDTH*x_1*y_a*y_b*y_c-ROAD_WIDTH*x_1*y_a*y_b*y_d+144*x_a*y_b*y_c-144*x_a*y_b*y_d-ROAD_WIDTH*x_c*y_a*y_b*y_d-144*x_c*y_a*y_b+ROAD_WIDTH*x_d*y_a*y_b*y_c
+            - 4*(road_width*x_1*y_a*y_b*y_c-road_width*x_1*y_a*y_b*y_d+144*x_a*y_b*y_c-144*x_a*y_b*y_d-road_width*x_c*y_a*y_b*y_d-144*x_c*y_a*y_b+road_width*x_d*y_a*y_b*y_c
                  + 144*x_d*y_a*y_b)*(x_a * y_b*y_c-x_a*y_b*y_d+x_b*y_a*y_c-x_b*y_a*y_d-2*x_c*y_a*y_b+2*x_d*y_a*y_b))**0.5
           + 2*x_1*y_a*y_b*y_c-2*x_1*y_a*y_b*y_d+24*x_a*y_b*y_c-24*x_a*y_b*y_d-2*x_c*y_a*y_b*y_d-24*x_c*y_a*y_b+2*x_d*y_a*y_b*y_c+24*x_d*y_a*y_b)/(2*(x_a*y_b*y_c
                                                                                                                                                      - x_a*y_b*y_d+x_b*y_a*y_c-x_b*y_a*y_d-2*x_c*y_a*y_b+2*x_d*y_a*y_b))
 
     x_2 = h*x_b/y_b
     x_3 = (h-y_d)*(x_c-x_d)/(y_c-y_d)+x_d
-    x_4 = (h-ROAD_WIDTH-y_d)*(x_c-x_d)/(y_c-y_d)+x_d
-    x_5 = (h-ROAD_WIDTH)*x_a/y_a
+    x_4 = (h-road_width-y_d)*(x_c-x_d)/(y_c-y_d)+x_d
+    x_5 = (h-road_width)*x_a/y_a
 
     mid_top = (x_3+x_2)/2
     top_polygon = [[mid_top, h], [x_2, h], *
@@ -64,8 +63,8 @@ def main(args):
         split_line_top[1]):], new_polygon_top[0]]
 
     mid_bottom = (x_5+x_4)/2
-    bottom_polygon = [[mid_bottom, h-ROAD_WIDTH], [x_4, h-ROAD_WIDTH], *
-                      new_coords[stop_index+1:], [x_5, h-ROAD_WIDTH]]
+    bottom_polygon = [[mid_bottom, h-road_width], [x_4, h-road_width], *
+                      new_coords[stop_index+1:], [x_5, h-road_width]]
 
     new_polygon_bottom, split_line_bottom = split_polygon(bottom_polygon)
 
@@ -77,19 +76,14 @@ def main(args):
 
     road_top = [[x_3, h], new_stop,
                 new_start, [x_2, h]]
-    road_bottom = [new_stop, [x_4, h-ROAD_WIDTH],
-                   [x_5, h-ROAD_WIDTH], new_start]
+    road_bottom = [new_stop, [x_4, h-road_width],
+                   [x_5, h-road_width], new_start]
 
     result_polygons = [new_coords, new_polygon_top_1, new_polygon_top_2,
                        new_polygon_bottom_1, new_polygon_bottom_2, road_top, road_bottom]
 
-    result_area = sum(
-        map(lambda polygon: area_by_shoelace(polygon), result_polygons[1:]))
-    print("initial total area: {}\nresult total area: {}".format(area_by_shoelace(coords), result_area)
-          )
-
     cut_points = [top_polygon[0], bottom_polygon[0],
-                  split_line_bottom[1], split_line_top[1], [x_2, h], [x_3, h], [x_4, h-ROAD_WIDTH], [x_5, h-ROAD_WIDTH]]
+                  split_line_bottom[1], split_line_top[1], [x_2, h], [x_3, h], [x_4, h-road_width], [x_5, h-road_width]]
 
     fig, ax = plt.subplots(2)
     polygon = Polygon(new_polygon, fc="none", ec="grey")
