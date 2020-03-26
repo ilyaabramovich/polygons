@@ -4,9 +4,7 @@ from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 from pathlib import Path
-import numpy as np
 from os import path
-import sys
 
 
 def main(args):
@@ -68,9 +66,12 @@ def main(args):
     mid_bottom = (x_5+x_4)/2
     bottom_polygon = [[mid_bottom, h-ROAD_WIDTH], [x_4, h-ROAD_WIDTH], *
                       new_coords[stop_index+1:], [x_5, h-ROAD_WIDTH]]
+
     new_polygon_bottom, split_line_bottom = split_polygon(bottom_polygon)
+
     new_polygon_bottom_1 = new_polygon_bottom[:new_polygon_bottom.index(
         split_line_bottom[1])+1]
+
     new_polygon_bottom_2 = [*new_polygon_bottom[new_polygon_bottom.index(
         split_line_bottom[1]):], new_polygon_bottom[0]]
 
@@ -89,21 +90,21 @@ def main(args):
 
     cut_points = [top_polygon[0], bottom_polygon[0],
                   split_line_bottom[1], split_line_top[1], [x_2, h], [x_3, h], [x_4, h-ROAD_WIDTH], [x_5, h-ROAD_WIDTH]]
-    colors = ["grey", "green", "red", "cyan", "magenta"]
+
+    fig, ax = plt.subplots(2)
+    polygon = Polygon(new_polygon, fc="none", ec="grey")
+    ax[0].add_patch(polygon)
+    ax[0].plot(*zip(*split_line), "--")
+    ax[0].scatter(*zip(*new_polygon))
+
     patches = []
     for coords in result_polygons[:-2]:
         polygon = Polygon(coords)
         patches.append(polygon)
-    p = PatchCollection(patches, fc="None", ec=colors)
-    fig, ax = plt.subplots(2)
-    polygon = Polygon(new_polygon)
-    p1 = PatchCollection([polygon], fc="none", ec="grey")
-    ax[0].add_collection(p1)
-    ax[0].axis("equal")
-    ax[0].scatter(*zip(*new_polygon))
-    ax[0].plot(*zip(*split_line), "--")
-    ax[1].axis("equal")
-    ax[1].plot(*zip(*new_split_line), "--")
+    colors = ["grey", "green", "red", "cyan", "magenta"]
+    p = PatchCollection(patches, fc="none", ec=colors)
+
     ax[1].add_collection(p)
+    ax[1].plot(*zip(*new_split_line), "--")
     ax[1].scatter(*zip(*cut_points))
     plt.show()
