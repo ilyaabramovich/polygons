@@ -1,5 +1,5 @@
-from helpers import (get_polygon_coords, read_polygon_data, smooth_polygon, area_by_shoelace,
-                     split_polygon, transform_coordinates, dist)
+from utils import (get_polygon_coords, read_polygon_data, smooth_polygon, area_by_shoelace,
+                   split_polygon, transform_coordinates, dist)
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
