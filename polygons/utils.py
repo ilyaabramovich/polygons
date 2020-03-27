@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 
-def area_by_shoelace(coords):
+def get_area(coords):
     x, y = zip(*coords)
     return 0.5 * np.abs(np.dot(x[:-1], y[1:]) + x[-1]*y[0] -
                         np.dot(y[:-1], x[1:]) - y[-1]*x[0])
@@ -37,10 +37,10 @@ def get_polygon_coords(dataframe, inverse=False):
 def split_polygon(coords, startIndex=0):
     triangles = [[coords[startIndex], *coords[i:i+2]]
                  for i in range(len(coords)-2)]
-    triangle_areas = {i: area_by_shoelace(
+    triangle_areas = {i: get_area(
         triangle) for i, triangle in enumerate(triangles)}
 
-    total_area = area_by_shoelace(coords)
+    total_area = get_area(coords)
     half_area = total_area*0.5
     current_area = 0
     index = -1
@@ -81,7 +81,7 @@ def smooth_polygon(data, status):
     new_coords = get_polygon_coords(new_data)
 
     # difference of squares
-    area_diff = area_by_shoelace(coords)-area_by_shoelace(new_coords)
+    area_diff = get_area(coords)-get_area(new_coords)
 
     # def - для локальной СК, чтобы сразу считать
     basis = dist(start, stop)
