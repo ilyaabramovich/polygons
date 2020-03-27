@@ -1,5 +1,5 @@
 from .utils import (get_coords, read_polygon, smooth, area,
-                    split, transform_coordinates, dist, variants_to_csv)
+                    split, transform_coordinates, dist, list_to_csv)
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
@@ -12,13 +12,13 @@ def main(filename, road_width):
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     data = read_polygon(filename)
     variants = smooth(data=data, status=900)
-    variants_to_csv(variants, output_dir)
+    list_to_csv(variants, output_dir)
 
     new_output_dir = output_dir+"_2"
     smooth_file = path.join(new_output_dir, "file_31.csv")
     smoothed_polygon = read_polygon(smooth_file)
     variants2 = smooth(data=smoothed_polygon, status=500)
-    variants_to_csv(variants2, new_output_dir)
+    list_to_csv(variants2, new_output_dir)
 
     final_polygon = variants2[0]
     coords = get_coords(final_polygon, inverse=True)

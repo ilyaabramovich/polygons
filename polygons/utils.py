@@ -144,6 +144,6 @@ def to_csv(data, path):
     data.to_csv(path, index=False, sep=';')
 
 
-def variants_to_csv(variants, output_dir):
-    for i, variant in enumerate(variants):
-        to_csv(variant, path.join(output_dir, "file_{}.csv".format(i)))
+def list_to_csv(elements, output_dir):
+    for i, e in enumerate(elements):
+        to_csv(e, path.join(output_dir, "file_{}.csv".format(i)))
