@@ -1,5 +1,5 @@
-from .utils import (get_polygon_coords, read_polygon_data, smooth_polygon, get_area,
-                    split_polygon, transform_coordinates, dist, variants_to_csv)
+from .utils import (get_coords, read_polygon, smooth, area,
+                    split, transform_coordinates, dist, variants_to_csv)
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
@@ -11,18 +11,18 @@ def main(filename, road_width):
     output_dir = "variants"
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     data = read_polygon(filename)
-    variants = smooth_polygon(data=data, status=900)
+    variants = smooth(data=data, status=900)
     variants_to_csv(variants, output_dir)
 
     new_output_dir = output_dir+"_2"
-    smooth_polygon_file = path.join(new_output_dir, "file_31.csv")
-    smoothed_polygon = read_polygon(smooth_polygon_file)
-    variants2 = smooth_polygon(data=smoothed_polygon, status=500)
+    smooth_file = path.join(new_output_dir, "file_31.csv")
+    smoothed_polygon = read_polygon(smooth_file)
+    variants2 = smooth(data=smoothed_polygon, status=500)
     variants_to_csv(variants2, new_output_dir)
 
     final_polygon = variants2[0]
     coords = get_coords(final_polygon, inverse=True)
-    new_polygon, start, stop = split_polygon(coords)
+    new_polygon, start, stop = split(coords)
     new_coords = transform_coordinates(new_polygon, start, stop)
     start_index = new_polygon.index(start)
     stop_index = new_polygon.index(stop)
@@ -54,7 +54,7 @@ def main(filename, road_width):
     mid_top = (x_2+x_3)*0.5
     top_polygon = [[mid_top, h], [x_2, h], *
                    new_coords[start_index+1:stop_index], [x_3, h]]
-    new_polygon_top, start_top, stop_top = split_polygon(top_polygon)
+    new_polygon_top, start_top, stop_top = split(top_polygon)
     new_polygon_top_1 = new_polygon_top[:new_polygon_top.index(
         stop_top)+1]
     new_polygon_top_2 = [*new_polygon_top[new_polygon_top.index(
@@ -64,7 +64,7 @@ def main(filename, road_width):
     bottom_polygon = [[mid_bottom, h-road_width], [x_4, h-road_width], *
                       new_coords[stop_index+1:], [x_5, h-road_width]]
 
-    new_polygon_bottom, start_bottom, stop_bottom = split_polygon(
+    new_polygon_bottom, start_bottom, stop_bottom = split(
         bottom_polygon)
 
     new_polygon_bottom_1 = new_polygon_bottom[:new_polygon_bottom.index(

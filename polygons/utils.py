@@ -34,7 +34,7 @@ def get_coords(dataframe, inverse=False):
     return coords
 
 
-def split_polygon(coords, startIndex=0):
+def split(coords, startIndex=0):
     triangles = [[coords[startIndex], *coords[i:i+2]]
                  for i in range(len(coords)-2)]
     triangle_areas = {i: get_area(
@@ -67,7 +67,7 @@ def transform_coordinates(coords, start, stop):
     return transformed
 
 
-def smooth_polygon(data, status):
+def smooth(data, status):
     start_row = data[data.status.eq("start")]
     stop_row = data[data.status.eq("stop")]
     start = start_row[["x", "y"]].values[0]
