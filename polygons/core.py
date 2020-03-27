@@ -1,4 +1,4 @@
-from .utils import (get_coords, read_polygon, smooth, area,
+from .utils import (get_coords, read_polygon, smooth, get_area,
                     split, transform_coordinates, dist, list_to_csv)
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
