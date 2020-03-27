@@ -10,8 +10,8 @@ from os import path
 def main(filename, road_width):
     output_dir = "variants"
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-    polygon = read_polygon_data(filename)
-    smooth_polygon(data=polygon, status=900, output_dir=output_dir)
+    data = read_polygon_data(filename)
+    smooth_polygon(data=data, status=900, output_dir=output_dir)
     new_output_dir = output_dir+"_2"
     smooth_polygon_file = path.join(new_output_dir, "file_31.csv")
     smoothed_polygon = read_polygon_data(smooth_polygon_file)
