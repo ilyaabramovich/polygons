@@ -142,3 +142,8 @@ def smooth_polygon(data, status):
 
 def to_csv(data, path):
     data.to_csv(path, index=False, sep=';')
+
+
+def variants_to_csv(variants, output_dir):
+    for i, variant in enumerate(variants):
+        to_csv(variant, path.join(output_dir, "file_{}.csv".format(i)))
