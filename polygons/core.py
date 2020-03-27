@@ -1,5 +1,5 @@
 from .utils import (get_polygon_coords, read_polygon_data, smooth_polygon, area_by_shoelace,
-                    split_polygon, transform_coordinates, dist)
+                    split_polygon, transform_coordinates, dist, to_csv)
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
@@ -11,17 +11,22 @@ def main(filename, road_width):
     output_dir = "variants"
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     data = read_polygon_data(filename)
-    smooth_polygon(data=data, status=900, output_dir=output_dir)
+    variants = smooth_polygon(data=data, status=900)
+
+    for i, variant in enumerate(variants):
+        to_csv(variant, path.join(output_dir, "file_{}.csv".format(i)))
+
     new_output_dir = output_dir+"_2"
     smooth_polygon_file = path.join(new_output_dir, "file_31.csv")
     smoothed_polygon = read_polygon_data(smooth_polygon_file)
 
-    smooth_polygon(data=smoothed_polygon, status=500,
-                   output_dir=new_output_dir)
-    final_polygon = path.join(new_output_dir, "file_0.csv")
+    variants_2 = smooth_polygon(data=smoothed_polygon, status=500)
 
-    dataframe = read_polygon_data(final_polygon)
-    coords = get_polygon_coords(dataframe, inverse=True)
+    for i, variant in enumerate(variants):
+        to_csv(variant, path.join(output_dir, "file_{}.csv".format(i)))
+
+    final_polygon = variants_2[0]
+    coords = get_polygon_coords(final_polygon, inverse=True)
     new_polygon, start, stop = split_polygon(coords)
     new_coords = transform_coordinates(new_polygon, start, stop)
     start_index = new_polygon.index(start)

@@ -65,7 +65,7 @@ def transform_coordinates(coords, start, stop):
     return transformed
 
 
-def smooth_polygon(data, status, output_dir):
+def smooth_polygon(data, status):
     start_row = data[data.status.eq("start")]
     stop_row = data[data.status.eq("stop")]
     start = start_row[["x", "y"]].values[0]
@@ -92,8 +92,8 @@ def smooth_polygon(data, status, output_dir):
 
     # Точки сглаживания в локальной СК.
     # По значению y_l_NEW можно понять, где входит H.
-    coords = get_polygon_coords(part)
-    dict_x, dict_y = zip(*transform_coordinates(coords, start, stop))
+    part_coords = get_polygon_coords(part)
+    dict_x, dict_y = zip(*transform_coordinates(part_coords, start, stop))
     dict_x = []
     dict_y = []
     for l in range(len_part):
@@ -121,6 +121,7 @@ def smooth_polygon(data, status, output_dir):
     new_data1 = data[data.status.isnull()]
     start_row = start_row.values[0].tolist()
     stop_row = stop_row.values[0].tolist()
+    variants = []
     for i, point in enumerate(dict_ins):
         x_k = dict_x[point[0]]
         y_k = dict_y[point[0]]
@@ -132,5 +133,10 @@ def smooth_polygon(data, status, output_dir):
         new_row = [status + i, x_H_main, y_H_main, 'new']
         df_data = [start_row, new_row, stop_row]
         df = pd.DataFrame(df_data, columns=data.columns).append(new_data1)
-        df.to_csv(path.join(output_dir, "file_{}.csv".format(i)),
-                  index=False, sep=';')
+        variants.append(df)
+
+    return variants
+
+
+def to_csv(data, path):
+    data.to_csv(path, index=False, sep=';')
