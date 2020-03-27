@@ -57,7 +57,7 @@ def split(coords, startIndex=0):
     return (new_coords, coords[startIndex], splitting_point)
 
 
-def transform_coordinates(coords, start, stop):
+def transform_coords(coords, start, stop):
     basis = dist(start, stop)
     cos, sin = np.divide(np.subtract(stop, start), basis)
     transform_matrix = np.array([[cos, sin], [-sin, cos]])
@@ -95,7 +95,7 @@ def smooth(data, status):
     # Точки сглаживания в локальной СК.
     # По значению y_l_NEW можно понять, где входит H.
     part_coords = get_coords(part)
-    dict_x, dict_y = zip(*transform_coordinates(part_coords, start, stop))
+    dict_x, dict_y = zip(*transform_coords(part_coords, start, stop))
     dict_x = []
     dict_y = []
     for l in range(len_part):

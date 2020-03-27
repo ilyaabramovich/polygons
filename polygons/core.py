@@ -1,5 +1,5 @@
 from .utils import (get_coords, read_polygon, smooth, get_area,
-                    split, transform_coordinates, dist, list_to_csv)
+                    split, transform_coords, dist, list_to_csv)
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ def main(filename, road_width):
     final_polygon = variants2[0]
     coords = get_coords(final_polygon, inverse=True)
     new_polygon, start, stop = split(coords)
-    new_coords = transform_coordinates(new_polygon, start, stop)
+    new_coords = transform_coords(new_polygon, start, stop)
     start_index = new_polygon.index(start)
     stop_index = new_polygon.index(stop)
     new_start = new_coords[start_index]
