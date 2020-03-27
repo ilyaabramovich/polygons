@@ -50,9 +50,9 @@ def split_polygon(coords):
     area = triangle_areas.get(index) - (current_area-half_area)
     splitting_point = find_splitting_point(
         triangles[index], area)
-    split_line = [coords[0], splitting_point]
-    new_coords = [*coords[:index+1], splitting_point, *coords[index+1:]]
-    return [new_coords, split_line]
+    new_coords = coords[:]
+    new_coords.insert(index+1, splitting_point)
+    return [new_coords, coords[0], splitting_point]
 
 
 def transform_coordinates(coords, start, stop):

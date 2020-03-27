@@ -22,14 +22,12 @@ def main(filename, road_width):
 
     dataframe = read_polygon_data(final_polygon)
     coords = get_polygon_coords(dataframe, inverse=True)
-    new_polygon, split_line = split_polygon(coords)
-    start, stop = split_line
+    new_polygon, start, stop = split_polygon(coords)
     new_coords = transform_coordinates(new_polygon, start, stop)
     start_index = new_polygon.index(start)
     stop_index = new_polygon.index(stop)
-    new_split_line = [new_coords[start_index],
-                      new_coords[stop_index]]
-    new_start, new_stop = new_split_line
+    new_start, new_stop = [new_coords[start_index],
+                           new_coords[stop_index]]
 
     x_1 = new_stop[0]
     x_a, y_a = new_coords[start_index-1]
@@ -56,23 +54,24 @@ def main(filename, road_width):
     mid_top = (x_3+x_2)/2
     top_polygon = [[mid_top, h], [x_2, h], *
                    new_coords[start_index+1:stop_index], [x_3, h]]
-    new_polygon_top, split_line_top = split_polygon(top_polygon)
+    new_polygon_top, start_top, stop_top = split_polygon(top_polygon)
     new_polygon_top_1 = new_polygon_top[:new_polygon_top.index(
-        split_line_top[1])+1]
+        stop_top)+1]
     new_polygon_top_2 = [*new_polygon_top[new_polygon_top.index(
-        split_line_top[1]):], new_polygon_top[0]]
+        stop_top):], new_polygon_top[0]]
 
     mid_bottom = (x_5+x_4)/2
     bottom_polygon = [[mid_bottom, h-road_width], [x_4, h-road_width], *
                       new_coords[stop_index+1:], [x_5, h-road_width]]
 
-    new_polygon_bottom, split_line_bottom = split_polygon(bottom_polygon)
+    new_polygon_bottom, start_bottom, stop_bottom = split_polygon(
+        bottom_polygon)
 
     new_polygon_bottom_1 = new_polygon_bottom[:new_polygon_bottom.index(
-        split_line_bottom[1])+1]
+        stop_bottom)+1]
 
     new_polygon_bottom_2 = [*new_polygon_bottom[new_polygon_bottom.index(
-        split_line_bottom[1]):], new_polygon_bottom[0]]
+        stop_bottom):], new_polygon_bottom[0]]
 
     road_top = [[x_3, h], new_stop,
                 new_start, [x_2, h]]
@@ -83,12 +82,12 @@ def main(filename, road_width):
                        new_polygon_bottom_1, new_polygon_bottom_2, road_top, road_bottom]
 
     cut_points = [top_polygon[0], bottom_polygon[0],
-                  split_line_bottom[1], split_line_top[1], [x_2, h], [x_3, h], [x_4, h-road_width], [x_5, h-road_width]]
+                  stop_bottom, stop_top, [x_2, h], [x_3, h], [x_4, h-road_width], [x_5, h-road_width]]
 
     fig, ax = plt.subplots(2)
     polygon = Polygon(new_polygon, fc="none", ec="grey")
     ax[0].add_patch(polygon)
-    ax[0].plot(*zip(*split_line), "--")
+    ax[0].plot(*zip(start, stop), "--")
     ax[0].scatter(*zip(*new_polygon))
 
     patches = []
@@ -99,6 +98,6 @@ def main(filename, road_width):
     p = PatchCollection(patches, fc="none", ec=colors)
 
     ax[1].add_collection(p)
-    ax[1].plot(*zip(*new_split_line), "--")
+    ax[1].plot(*zip(new_start, new_stop), "--")
     ax[1].scatter(*zip(*cut_points))
     plt.show()
