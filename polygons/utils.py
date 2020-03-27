@@ -18,7 +18,7 @@ def find_splitting_point(triangle, area):
     k = p2[0]*(p1[1]-p3[1]) + p1[0]*(p3[1]-p2[1]) + p3[0]*(p2[1]-p1[1])
     x = (2*area*(p3[0]-p2[0])+p2[0]*k) / k
     y = (p2[1]-p3[1])*(x-p3[0])/(p2[0]-p3[0]) + p3[1]
-    return [x, y]
+    return (x, y)
 
 
 def read_polygon_data(filename):
@@ -34,12 +34,14 @@ def get_polygon_coords(dataframe, inverse=False):
     return coords
 
 
-def split_polygon(coords):
-    total_area = area_by_shoelace(coords)
-    half_area = total_area*0.5
-    triangles = [[coords[0], *coords[i:i+2]] for i in range(len(coords)-2)]
+def split_polygon(coords, startIndex=0):
+    triangles = [[coords[startIndex], *coords[i:i+2]]
+                 for i in range(len(coords)-2)]
     triangle_areas = {i: area_by_shoelace(
         triangle) for i, triangle in enumerate(triangles)}
+
+    total_area = area_by_shoelace(coords)
+    half_area = total_area*0.5
     current_area = 0
     index = -1
 
@@ -52,7 +54,7 @@ def split_polygon(coords):
         triangles[index], area)
     new_coords = coords[:]
     new_coords.insert(index+1, splitting_point)
-    return [new_coords, coords[0], splitting_point]
+    return (new_coords, coords[startIndex], splitting_point)
 
 
 def transform_coordinates(coords, start, stop):

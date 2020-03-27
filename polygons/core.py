@@ -31,8 +31,8 @@ def main(filename, road_width):
     new_coords = transform_coordinates(new_polygon, start, stop)
     start_index = new_polygon.index(start)
     stop_index = new_polygon.index(stop)
-    new_start, new_stop = [new_coords[start_index],
-                           new_coords[stop_index]]
+    new_start = new_coords[start_index]
+    new_stop = new_coords[stop_index]
 
     x_1 = new_stop[0]
     x_a, y_a = new_coords[start_index-1]
@@ -56,7 +56,7 @@ def main(filename, road_width):
     x_4 = (h-road_width-y_d)*(x_c-x_d)/(y_c-y_d)+x_d
     x_5 = (h-road_width)*x_a/y_a
 
-    mid_top = (x_3+x_2)/2
+    mid_top = (x_2+x_3)*0.5
     top_polygon = [[mid_top, h], [x_2, h], *
                    new_coords[start_index+1:stop_index], [x_3, h]]
     new_polygon_top, start_top, stop_top = split_polygon(top_polygon)
