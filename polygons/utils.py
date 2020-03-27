@@ -118,7 +118,7 @@ def smooth_polygon(data, status, output_dir):
             dict_ins.append(s)
 
     # Функция для определения пересечения высоты
-    new_data = data[data.status.isnull()]
+    new_data1 = data[data.status.isnull()]
     start_row = start_row.values[0].tolist()
     stop_row = stop_row.values[0].tolist()
     for i, point in enumerate(dict_ins):
@@ -131,6 +131,6 @@ def smooth_polygon(data, status, output_dir):
         x_H_main = x_H*sinA + H*cosA + xn
         new_row = [status + i, x_H_main, y_H_main, 'new']
         df_data = [start_row, new_row, stop_row]
-        df = pd.DataFrame(df_data, columns=data.columns).append(new_data)
+        df = pd.DataFrame(df_data, columns=data.columns).append(new_data1)
         df.to_csv(path.join(output_dir, "file_{}.csv".format(i)),
                   index=False, sep=';')
