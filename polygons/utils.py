@@ -38,7 +38,7 @@ def get_coords(dataframe, inverse=False):
 def split(coords, startIndex=0):
     triangles = [[coords[startIndex], *coords[i:i+2]]
                  for i in range(len(coords)-2)]
-    triangle_areas = {i: get_area(
+    areas = {i: get_area(
         triangle) for i, triangle in enumerate(triangles)}
 
     total_area = get_area(coords)
@@ -48,9 +48,9 @@ def split(coords, startIndex=0):
 
     while(current_area < half_area):
         index += 1
-        current_area += triangle_areas.get(index)
+        current_area += areas.get(index)
 
-    area = triangle_areas.get(index) - (current_area-half_area)
+    area = areas.get(index) - (current_area-half_area)
     splitting_point = find_splitting_point(
         triangles[index], area)
     new_coords = coords[:]
@@ -73,8 +73,8 @@ def smooth(data, status):
     stop_row = data[data.status.eq("stop")]
     start = start_row[["x", "y"]].values[0]
     stop = stop_row[["x", "y"]].values[0]
-    xn, yn = start
-    xn_j, yn_j = stop
+    x_start, y_start = start
+    x_stop, y_stop = stop
     # data for new square
     new_data = data[data.status.ne('+')]
 
@@ -82,60 +82,57 @@ def smooth(data, status):
     new_coords = get_coords(new_data)
 
     # difference of squares
-    area_diff = get_area(coords)-get_area(new_coords)
+    diff_area = get_area(coords)-get_area(new_coords)
 
     # def - для локальной СК, чтобы сразу считать
     basis = dist(start, stop)
-    cosA = (yn_j - yn)/basis
-    sinA = (xn_j - xn)/basis
-    H = 2*area_diff/basis
+    cos = (y_stop - y_start)/basis
+    sin = (x_stop - x_start)/basis
+    h = 2*diff_area/basis
 
     part = data.dropna()
     len_part = len(part)
 
     # Точки сглаживания в локальной СК.
     # По значению y_l_NEW можно понять, где входит H.
-    part_coords = get_coords(part)
-    dict_x, dict_y = zip(*transform_coords(part_coords, start, stop))
+    coords_part = get_coords(part)
+    dict_x, dict_y = zip(*transform_coords(coords_part, start, stop))
     dict_x = []
     dict_y = []
-    for l in range(len_part):
-        x_l = part.iloc[l, 1]
-        y_l = part.iloc[l, 2]
-        x_l_new = (y_l - yn)*cosA + (x_l - xn)*sinA
-        y_l_new = -(y_l - yn)*sinA + (x_l - xn)*cosA
-        dict_x.append(x_l_new)
-        dict_y.append(y_l_new)
+    for i in range(len_part):
+        x = part.iloc[i, 1]
+        y = part.iloc[i, 2]
+        x_new = (y - y_start)*cos + (x - x_start)*sin
+        y_new = -(y - y_start)*sin + (x - x_start)*cos
+        dict_x.append(x_new)
+        dict_y.append(y_new)
 
     # Вхождение высоты в конкретный интервал
     dict_ins = []
     for k in range(len_part - 1):
-        if (H < 0 and ((H <= dict_y[k] and H >= dict_y[k+1])
-                       or (H >= dict_y[k] and H <= dict_y[k+1]))):
+        if (h < 0 and ((h <= dict_y[k] and h >= dict_y[k+1])
+                       or (h >= dict_y[k] and h <= dict_y[k+1]))):
             s = [k, k+1]
             dict_ins.append(s)
-        elif (H > 0 and ((H >= dict_y[k] and H <= dict_y[k+1])
-                         or (H <= dict_y[k] and H >= dict_y[k+1]))):
+        elif (h > 0 and ((h >= dict_y[k] and h <= dict_y[k+1])
+                         or (h <= dict_y[k] and h >= dict_y[k+1]))):
 
             s = [k, k+1]
             dict_ins.append(s)
 
     # Функция для определения пересечения высоты
     new_data1 = data[data.status.isnull()]
-    start_row = start_row.values[0].tolist()
-    stop_row = stop_row.values[0].tolist()
     variants = []
     for i, point in enumerate(dict_ins):
         x_k = dict_x[point[0]]
         y_k = dict_y[point[0]]
         x_k_1 = dict_x[point[1]]
         y_k_1 = dict_y[point[1]]
-        x_H = (H - y_k)*(x_k_1 - x_k)/(y_k_1 - y_k) + x_k
-        y_H_main = x_H*cosA - H*sinA + yn
-        x_H_main = x_H*sinA + H*cosA + xn
-        new_row = [status + i, x_H_main, y_H_main, 'new']
-        df_data = [start_row, new_row, stop_row]
-        df = pd.DataFrame(df_data, columns=data.columns).append(new_data1)
+        x_h = (h - y_k)*(x_k_1 - x_k)/(y_k_1 - y_k) + x_k
+        y_h_main = x_h*cos - h*sin + y_start
+        x_h_main = x_h*sin + h*cos + x_start
+        new_row = pd.DataFrame([[status + i, x_h_main, y_h_main, 'new']], columns=data.columns)
+        df = pd.concat([start_row, new_row, stop_row, new_data1], ignore_index = True)
         variants.append(df)
 
     return variants
