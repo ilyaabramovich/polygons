@@ -1,11 +1,14 @@
-from .utils import (get_coords, read_polygon, smooth, get_area,
-                    split, transform_coords, dist, list_to_csv)
-from matplotlib.patches import Polygon
-from matplotlib.collections import PatchCollection
-import matplotlib.pyplot as plt
-from pathlib import Path
 from os import path
+from pathlib import Path
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Polygon
+
+from .utils import (dist, get_area, get_coords, list_to_csv, read_polygon,
+                    smooth, split, transform_coords)
+
 
 def main(filename, road_width):
     output_dir = "variants"
