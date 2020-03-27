@@ -26,7 +26,7 @@ def read_polygon(filename):
     return data.astype({"x": float, "y": float})
 
 
-def get_polygon_coords(dataframe, inverse=False):
+def get_coords(dataframe, inverse=False):
     columns = ["x", "y"]
     if inverse:
         columns.reverse()
@@ -77,8 +77,8 @@ def smooth_polygon(data, status):
     # data for new square
     new_data = data[data.status.ne('+')]
 
-    coords = get_polygon_coords(data)
-    new_coords = get_polygon_coords(new_data)
+    coords = get_coords(data)
+    new_coords = get_coords(new_data)
 
     # difference of squares
     area_diff = get_area(coords)-get_area(new_coords)
@@ -94,7 +94,7 @@ def smooth_polygon(data, status):
 
     # Точки сглаживания в локальной СК.
     # По значению y_l_NEW можно понять, где входит H.
-    part_coords = get_polygon_coords(part)
+    part_coords = get_coords(part)
     dict_x, dict_y = zip(*transform_coordinates(part_coords, start, stop))
     dict_x = []
     dict_y = []

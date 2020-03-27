@@ -21,7 +21,7 @@ def main(filename, road_width):
     variants_to_csv(variants2, new_output_dir)
 
     final_polygon = variants2[0]
-    coords = get_polygon_coords(final_polygon, inverse=True)
+    coords = get_coords(final_polygon, inverse=True)
     new_polygon, start, stop = split_polygon(coords)
     new_coords = transform_coordinates(new_polygon, start, stop)
     start_index = new_polygon.index(start)
