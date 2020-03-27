@@ -21,7 +21,7 @@ def find_splitting_point(triangle, area):
     return (x, y)
 
 
-def read_polygon_data(filename):
+def read_polygon(filename):
     data = pd.read_csv(filename, sep=';', decimal=',')
     return data.astype({"x": float, "y": float})
 
