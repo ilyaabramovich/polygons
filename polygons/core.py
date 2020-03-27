@@ -5,7 +5,7 @@ from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 from pathlib import Path
 from os import path
-
+import matplotlib as mpl
 
 def main(filename, road_width):
     output_dir = "variants"
@@ -84,8 +84,10 @@ def main(filename, road_width):
     cut_points = [polygon_top[0], polygon_bottom[0],
                   stop_bottom, stop_top, [x_2, h], [x_3, h], [x_4, h-road_width], [x_5, h-road_width]]
 
+    mpl.rcParams['patch.facecolor'] = 'none'
+
     fig, ax = plt.subplots(2)
-    polygon = Polygon(polygon_new, fc="none", ec="grey")
+    polygon = Polygon(polygon_new, ec="grey")
     ax[0].add_patch(polygon)
     ax[0].plot(*zip(start, stop), "--")
     ax[0].scatter(*zip(*polygon_new))
@@ -95,7 +97,7 @@ def main(filename, road_width):
         polygon = Polygon(coords)
         patches.append(polygon)
     colors = ["grey", "green", "red", "cyan", "magenta"]
-    p = PatchCollection(patches, fc="none", ec=colors)
+    p = PatchCollection(patches, ec=colors)
 
     ax[1].add_collection(p)
     ax[1].plot(*zip(start_new, stop_new), "--")
