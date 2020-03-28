@@ -3,11 +3,16 @@ import pandas as pd
 from .utils import (split_point, dist, transform_coords, coords, area)
 
 class MyPolygon:
+    columns = ["number","x","y","status"]
+   
     def __init__(self, data, inverse=False):
       self.data = data
       self.coords = coords(self.data, inverse)
       self.area = area(self.coords)
 
+    @classmethod
+    def fromlist(cls, data):
+      return cls(pd.DataFrame(data, columns=cls.columns[1:-1]))
 
     def get_coords(self):
       return self.coords 
