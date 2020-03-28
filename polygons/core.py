@@ -4,7 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
-from .Polygon import MyPolygon
+from .polygon import MyPolygon
 from .utils import (list_to_csv, transform_coords, read_polygon, split)
 
 
