@@ -35,29 +35,6 @@ def coords(dataframe, inverse=False):
     return coords
 
 
-def split(coords, startIndex=0):
-    triangles = [[coords[startIndex], *coords[i:i+2]]
-                 for i in range(len(coords)-2)]
-    areas = {i: area(
-        triangle) for i, triangle in enumerate(triangles)}
-
-    total_area = area(coords)
-    half_area = total_area*0.5
-    current_area = 0
-    index = -1
-
-    while(current_area < half_area):
-        index += 1
-        current_area += areas.get(index)
-
-    triangle_area = areas.get(index) - (current_area-half_area)
-    splitting_point = split_point(
-        triangles[index], triangle_area)
-    new_coords = coords[:]
-    new_coords.insert(index+1, splitting_point)
-    return (new_coords, coords[startIndex], splitting_point)
-
-
 def transform_coords(coords, start, stop):
     basis = dist(start, stop)
     cos, sin = np.divide(np.subtract(stop, start), basis)

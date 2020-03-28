@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from .utils import (split_point, dist, transform_coords, coords, area)
+from .utils import (split_point, dist, coords, area)
 
 class MyPolygon:
     columns = ["number","x","y","status"]
@@ -44,6 +44,7 @@ class MyPolygon:
       new_coords.insert(index+1, splitting_point)
       return (new_coords, self.coords[startIndex], splitting_point)
 
+
     def smooth(self, status):
       start_row =  self.data[ self.data.status.eq("start")]
       stop_row =  self.data[ self.data.status.eq("stop")]
@@ -69,8 +70,6 @@ class MyPolygon:
 
       # Точки сглаживания в локальной СК.
       # По значению y_l_NEW можно понять, где входит H.
-      coords_part = coords(part)
-      dict_x, dict_y = zip(*transform_coords(coords_part, start, stop))
       dict_x = []
       dict_y = []
       for i in range(len_part):
