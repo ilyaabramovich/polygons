@@ -1,31 +1,30 @@
 from os import path
 from pathlib import Path
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
-
-from .utils import (dist, get_area, get_coords, list_to_csv, read_polygon,
-                    smooth, split, transform_coords)
+from .Polygon import MyPolygon
+from .utils import (dist, get_area, list_to_csv, transform_coords, read_polygon, split, get_coords)
 
 
 def main(filename, road_width):
     output_dir = "variants"
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     data = read_polygon(filename)
-    variants = smooth(data=data, status=900)
+    polygon = MyPolygon(data)
+    variants = polygon.smooth(status=900)
     list_to_csv(variants, output_dir)
 
     new_output_dir = output_dir+"_2"
     file_smooth = path.join(new_output_dir, "file_31.csv")
-    polygon_smoothed = read_polygon(file_smooth)
-    variants2 = smooth(data=polygon_smoothed, status=500)
+    data_smoothed = read_polygon(file_smooth)
+    polygon_smoothed = MyPolygon(data_smoothed)
+    variants2 = polygon_smoothed.smooth(status=500)
     list_to_csv(variants2, new_output_dir)
 
-    polygon_final = variants2[0]
-    coords = get_coords(polygon_final, inverse=True)
-    polygon_new, start, stop = split(coords)
+    polygon_final = MyPolygon(variants2[0], inverse=True)
+    polygon_new, start, stop = polygon_final.split()
     coords_new = transform_coords(polygon_new, start, stop)
     index_start = polygon_new.index(start)
     index_stop = polygon_new.index(stop)
