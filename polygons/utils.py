@@ -14,7 +14,7 @@ def dist(point1, point2):
     return np.linalg.norm(np.subtract(point2, point1))
 
 
-def find_splitting_point(triangle, area):
+def split_point(triangle, area):
     p1, p2, p3 = triangle
     k = p2[0]*(p1[1]-p3[1]) + p1[0]*(p3[1]-p2[1]) + p3[0]*(p2[1]-p1[1])
     x = (2*area*(p3[0]-p2[0])+p2[0]*k) / k
@@ -51,7 +51,7 @@ def split(coords, startIndex=0):
         current_area += areas.get(index)
 
     triangle_area = areas.get(index) - (current_area-half_area)
-    splitting_point = find_splitting_point(
+    splitting_point = split_point(
         triangles[index], triangle_area)
     new_coords = coords[:]
     new_coords.insert(index+1, splitting_point)

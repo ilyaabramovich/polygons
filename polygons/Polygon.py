@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from .utils import (find_splitting_point, dist, transform_coords, coords, area, read_polygon)
+from .utils import (split_point, dist, transform_coords, coords, area)
 
 class MyPolygon:
     def __init__(self, data, inverse=False):
@@ -33,7 +33,7 @@ class MyPolygon:
           current_area += areas.get(index)
 
       triangle_area = areas.get(index) - (current_area-half_area)
-      splitting_point = find_splitting_point(
+      splitting_point = split_point(
           triangles[index], triangle_area)
       new_coords = self.coords[:]
       new_coords.insert(index+1, splitting_point)
