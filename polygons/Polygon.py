@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-from .utils import (find_splitting_point, dist, transform_coords, get_coords, get_area, read_polygon)
+from .utils import (find_splitting_point, dist, transform_coords, coords, area, read_polygon)
 
 class MyPolygon:
     def __init__(self, data, inverse=False):
       self.data = data
-      self.coords = get_coords(self.data, inverse)
-      self.area = get_area(self.coords)
+      self.coords = coords(self.data, inverse)
+      self.area = area(self.coords)
 
 
     def get_coords(self):
@@ -21,7 +21,7 @@ class MyPolygon:
     def split(self, startIndex=0):
       triangles = [[self.coords[startIndex], *self.coords[i:i+2]]
                   for i in range(len(self.coords)-2)]
-      areas = {i: get_area(
+      areas = {i: area(
           triangle) for i, triangle in enumerate(triangles)}
 
       half_area = self.area*0.5
@@ -32,9 +32,9 @@ class MyPolygon:
           index += 1
           current_area += areas.get(index)
 
-      area = areas.get(index) - (current_area-half_area)
+      triangle_area = areas.get(index) - (current_area-half_area)
       splitting_point = find_splitting_point(
-          triangles[index], area)
+          triangles[index], triangle_area)
       new_coords = self.coords[:]
       new_coords.insert(index+1, splitting_point)
       return (new_coords, self.coords[startIndex], splitting_point)
@@ -48,10 +48,10 @@ class MyPolygon:
       x_stop, y_stop = stop
       # data for new square
       new_data = self.data[self.data.status.ne('+')]
-      new_coords = get_coords(new_data)
+      new_coords = coords(new_data)
 
       # difference of squares
-      diff_area = self.area-get_area(new_coords)
+      diff_area = self.area-area(new_coords)
 
       # def - для локальной СК, чтобы сразу считать
       basis = dist(start, stop)
@@ -64,7 +64,7 @@ class MyPolygon:
 
       # Точки сглаживания в локальной СК.
       # По значению y_l_NEW можно понять, где входит H.
-      coords_part = get_coords(part)
+      coords_part = coords(part)
       dict_x, dict_y = zip(*transform_coords(coords_part, start, stop))
       dict_x = []
       dict_y = []

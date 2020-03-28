@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-def get_area(coords):
+def area(coords):
     x, y = zip(*coords)
     return 0.5 * np.abs(np.dot(x[:-1], y[1:]) + x[-1]*y[0] -
                         np.dot(y[:-1], x[1:]) - y[-1]*x[0])
@@ -27,7 +27,7 @@ def read_polygon(filename):
     return data.astype({"x": float, "y": float})
 
 
-def get_coords(dataframe, inverse=False):
+def coords(dataframe, inverse=False):
     columns = ["x", "y"]
     if inverse:
         columns.reverse()
@@ -38,10 +38,10 @@ def get_coords(dataframe, inverse=False):
 def split(coords, startIndex=0):
     triangles = [[coords[startIndex], *coords[i:i+2]]
                  for i in range(len(coords)-2)]
-    areas = {i: get_area(
+    areas = {i: area(
         triangle) for i, triangle in enumerate(triangles)}
 
-    total_area = get_area(coords)
+    total_area = area(coords)
     half_area = total_area*0.5
     current_area = 0
     index = -1
@@ -50,9 +50,9 @@ def split(coords, startIndex=0):
         index += 1
         current_area += areas.get(index)
 
-    area = areas.get(index) - (current_area-half_area)
+    triangle_area = areas.get(index) - (current_area-half_area)
     splitting_point = find_splitting_point(
-        triangles[index], area)
+        triangles[index], triangle_area)
     new_coords = coords[:]
     new_coords.insert(index+1, splitting_point)
     return (new_coords, coords[startIndex], splitting_point)

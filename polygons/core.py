@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
 from .Polygon import MyPolygon
-from .utils import (dist, get_area, list_to_csv, transform_coords, read_polygon, split, get_coords)
+from .utils import (list_to_csv, transform_coords, read_polygon, split)
 
 
 def main(filename, road_width):
