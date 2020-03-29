@@ -55,7 +55,7 @@ def main(filename, road_width):
 
     mid_top = (x_2+x_3)*0.5
     polygon_top = MyPolygon.fromlist([[mid_top, h], [x_2, h], *
-                   coords_new[index_start+1:index_stop], [x_3, h]])
+                                      coords_new[index_start+1:index_stop], [x_3, h]])
     polygon_new_top, start_top, stop_top = polygon_top.split()
     polygon_new_top_1 = polygon_new_top[:polygon_new_top.index(
         stop_top)+1]
@@ -64,10 +64,10 @@ def main(filename, road_width):
 
     mid_bottom = (x_5+x_4)/2
     polygon_bottom = MyPolygon.fromlist([[mid_bottom, h-road_width], [x_4, h-road_width], *
-                      coords_new[index_stop+1:], [x_5, h-road_width]])
+                                         coords_new[index_stop+1:], [x_5, h-road_width]])
 
     polygon_new_bottom, start_bottom, stop_bottom = polygon_bottom.split(
-        )
+    )
 
     polygon_new_bottom_1 = polygon_new_bottom[:polygon_new_bottom.index(
         stop_bottom)+1]
