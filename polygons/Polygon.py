@@ -4,16 +4,10 @@ from .utils import (split_point, dist, coords, area)
 
 
 class MyPolygon:
-    columns = ["number", "x", "y", "status"]
-
     def __init__(self, data, inverse=False):
         self.data = data
         self.coords = coords(self.data, inverse)
         self.area = area(self.coords)
-
-    @classmethod
-    def fromlist(cls, data):
-        return cls(pd.DataFrame(data, columns=cls.columns[1:-1]))
 
     def get_coords(self):
         return self.coords
@@ -24,13 +18,14 @@ class MyPolygon:
     def get_data(self):
         return self.data
 
-    def split(self, startIndex=0):
-        triangles = [[self.coords[startIndex], *self.coords[i:i+2]]
-                     for i in range(len(self.coords)-2)]
+    @staticmethod
+    def split(coords, startIndex=0):
+        triangles = [[coords[startIndex], *coords[i:i+2]]
+                     for i in range(len(coords)-2)]
         areas = {i: area(
             triangle) for i, triangle in enumerate(triangles)}
 
-        half_area = self.area*0.5
+        half_area = area(coords)*0.5
         current_area = 0
         index = -1
 
@@ -41,9 +36,9 @@ class MyPolygon:
         triangle_area = areas.get(index) - (current_area-half_area)
         splitting_point = split_point(
             triangles[index], triangle_area)
-        new_coords = self.coords[:]
+        new_coords = coords[:]
         new_coords.insert(index+1, splitting_point)
-        return (new_coords, self.coords[startIndex], splitting_point)
+        return (new_coords, coords[startIndex], splitting_point)
 
     def smooth(self, status):
         start_row = self.data[self.data.status.eq("start")]
